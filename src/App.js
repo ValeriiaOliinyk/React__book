@@ -4,7 +4,10 @@ import shortId from "shortid";
 // import PropTypes from "prop-types";
 
 // Components
+import Section from "./components/Section";
 import Filter from "./components/Filter";
+import ContactForm from "./components/ContactForm";
+import ContactList from "./components/ContactList";
 
 class App extends Component {
   state = {
@@ -15,39 +18,31 @@ class App extends Component {
       { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
     ],
     filter: "",
-    name: "",
-    number: "",
   };
 
   addTodo = (name, number) => {
+    const { contacts } = this.state;
     const todo = {
       id: shortId.generate(),
       name,
       number,
     };
 
+    contacts.forEach((contact) => {
+      if (contact.name === todo.name) {
+        alert(contact.name);
+        return;
+      }
+    });
+
+    // if (filtredName) {
+    //   alert("Evrika");
+    //   return;
+    // }
+
     this.setState(({ contacts }) => ({
       contacts: [todo, ...contacts],
     }));
-  };
-
-  updateTodos = (e) => {
-    this.setState({ name: e.currentTarget.value });
-  };
-
-  updateNumbers = (e) => {
-    this.setState({ number: e.currentTarget.value });
-  };
-
-  reset = () => {
-    this.setState({ name: "", number: "" });
-  };
-
-  handleSubmit = (e) => {
-    const { number, name } = this.state;
-    e.preventDefault();
-    this.addTodo(name, number);
-    this.reset();
   };
 
   changeFilter = (e) => {
@@ -62,37 +57,32 @@ class App extends Component {
     );
   };
 
-  render() {
-    const { contacts, name, number, filter } = this.state;
+  //   checkUsers = () => {
+  //     const { contacts } = this.state;
+  //     return contacts.filter((contact, index, arr) => {
+  //       if (arr.includes(contact.name)) {
+  //         console.log(contact.name);
+  //         return alert(`${contact.name}`);
+  //       }
+  //       return console.log("Неудача");
+  //     });
+  //   };
 
+  render() {
+    const { contacts, filter } = this.state;
     const visiableTodos = this.getVissiableTodos();
 
     return (
       <>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Name <br />
-            <input type="text" value={name} onChange={this.updateTodos} />
-          </label>
-          <br />
-          <label>
-            Number <br />
-            <input type="text" value={number} onChange={this.updateNumbers} />
-          </label>
-          <br />
-          <button type="submit">Add contact</button>
-        </form>
-        <h2>Contacts</h2>
-        {contacts.length >= 2 && (
-          <Filter value={filter} onChange={this.changeFilter} />
-        )}
-        <ul>
-          {visiableTodos.map((contact) => (
-            <li key={contact.id}>
-              {contact.name} : {contact.number}
-            </li>
-          ))}
-        </ul>
+        <Section title="Phonebook">
+          <ContactForm onSubmit={this.addTodo} />
+        </Section>
+        <Section title="Contacts">
+          {contacts.length >= 2 && (
+            <Filter value={filter} onChange={this.changeFilter} />
+          )}
+          <ContactList array={visiableTodos} />
+        </Section>
       </>
     );
   }
