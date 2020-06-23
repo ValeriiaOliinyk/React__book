@@ -1,7 +1,19 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+import styles from "./ContactForm.module.css";
 
 class ContactForm extends Component {
-  state = { name: "", number: "" };
+  static defaultProps = {
+    name: "",
+    number: "",
+  };
+
+  static propTypes = {
+    name: PropTypes.string,
+    number: PropTypes.string,
+  };
+
+  state = { name: this.props.name, number: this.props.number };
 
   updateTodos = (e) => {
     this.setState({ name: e.currentTarget.value });
@@ -26,18 +38,31 @@ class ContactForm extends Component {
     const { name, number } = this.state;
 
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form onSubmit={this.handleSubmit} className={styles.form}>
         <label>
           Name <br />
-          <input type="text" value={name} onChange={this.updateTodos} />
+          <input
+            type="text"
+            value={name}
+            onChange={this.updateTodos}
+            className={styles.input}
+            placeholder="Type name... "
+          />
         </label>
-        <br />
-        <label>
+        <label className={styles.label}>
           Number <br />
-          <input type="text" value={number} onChange={this.updateNumbers} />
+          <input
+            type="text"
+            value={number}
+            onChange={this.updateNumbers}
+            className={styles.input}
+            placeholder="Type number... "
+          />
         </label>
         <br />
-        <button type="submit">Add contact</button>
+        <button type="submit" className={styles.button}>
+          Add contact
+        </button>
       </form>
     );
   }
