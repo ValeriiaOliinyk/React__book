@@ -1,19 +1,19 @@
 // Base
-import React, { Component } from "react";
-import shortId from "shortid";
-import PropTypes from "prop-types";
-import users from "./users.json";
+import React, { Component } from 'react';
+import shortId from 'shortid';
+import PropTypes from 'prop-types';
+import users from './users.json';
 
 // Components
-import Container from "./components/Container";
-import Section from "./components/Section";
-import Filter from "./components/Filter";
-import ContactForm from "./components/ContactForm";
-import ContactList from "./components/ContactList";
+import Container from './components/Container';
+import Section from './components/Section';
+import Filter from './components/Filter';
+import ContactForm from './components/ContactForm';
+import ContactList from './components/ContactList';
 
 class App extends Component {
   static defaultProps = {
-    filter: "",
+    filter: '',
     contacts: [],
   };
 
@@ -24,65 +24,69 @@ class App extends Component {
 
   state = {
     contacts: users,
-    filter: this.props.filter,
+    filter: '',
   };
 
-  addTodo = (name, number) => {
+  addContact = (name, number) => {
     const { contacts } = this.state;
-    const todo = {
+    const phonebook = {
       id: shortId.generate(),
       name,
       number,
     };
 
-    let currentName = "";
+    const currentName = contacts.some(
+      contact => contact.name === phonebook.name,
+    );
 
-    contacts.forEach((contact) => {
-      if (contact.name === todo.name) {
-        currentName = contact.name;
-        alert(`${contact.name} is already in contacts`);
-      }
-    });
+    if (currentName) {
+      alert(`${phonebook.name} is already in contacts`);
+    }
 
     if (!currentName) {
       this.setState(({ contacts }) => ({
-        contacts: [todo, ...contacts],
+        contacts: [phonebook, ...contacts],
       }));
     }
   };
 
-  changeFilter = (e) => {
+  changeFilter = e => {
     this.setState({ filter: e.currentTarget.value });
   };
 
-  getVissiableTodos = () => {
+  getVissiableContacts = () => {
     const { contacts, filter } = this.state;
     const normalizzedFilter = filter.toLocaleLowerCase();
-    return contacts.filter((contact) =>
-      contact.name.toLowerCase().includes(normalizzedFilter)
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizzedFilter),
     );
   };
 
-  deleteTodo = (todoId) => {
-    this.setState((prevState) => ({
-      contacts: prevState.contacts.filter((todo) => todo.id !== todoId),
+  deleteContact = contactId => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(
+        currentContact => currentContact.id !== contactId,
+      ),
     }));
   };
 
   render() {
     const { contacts, filter } = this.state;
-    const visiableTodos = this.getVissiableTodos();
+    const visiableContacts = this.getVissiableContacts();
 
     return (
       <Container>
         <Section title="Phonebook">
-          <ContactForm onSubmit={this.addTodo} />
+          <ContactForm onSubmit={this.addContact} />
         </Section>
         <Section title="Contacts">
           {contacts.length >= 2 && (
             <Filter value={filter} onChange={this.changeFilter} />
           )}
-          <ContactList array={visiableTodos} onDeleteTodo={this.deleteTodo} />
+          <ContactList
+            contacts={visiableContacts}
+            onDeleteContact={this.deleteContact}
+          />
         </Section>
       </Container>
     );

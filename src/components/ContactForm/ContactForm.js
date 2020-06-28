@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import styles from "./ContactForm.module.css";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import styles from './ContactForm.module.css';
 
 class ContactForm extends Component {
   static defaultProps = {
-    name: "",
-    number: "",
+    name: '',
+    number: '',
   };
 
   static propTypes = {
@@ -15,19 +15,16 @@ class ContactForm extends Component {
 
   state = { name: this.props.name, number: this.props.number };
 
-  updateTodos = (e) => {
-    this.setState({ name: e.currentTarget.value });
-  };
-
-  updateNumbers = (e) => {
-    this.setState({ number: e.currentTarget.value });
+  updateContacts = e => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
   };
 
   reset = () => {
-    this.setState({ name: "", number: "" });
+    this.setState({ name: '', number: '' });
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     const { number, name } = this.state;
     e.preventDefault();
     this.props.onSubmit(name, number);
@@ -44,7 +41,8 @@ class ContactForm extends Component {
           <input
             type="text"
             value={name}
-            onChange={this.updateTodos}
+            name="name"
+            onChange={this.updateContacts}
             className={styles.input}
             placeholder="Type name... "
           />
@@ -54,7 +52,8 @@ class ContactForm extends Component {
           <input
             type="text"
             value={number}
-            onChange={this.updateNumbers}
+            name="number"
+            onChange={this.updateContacts}
             className={styles.input}
             placeholder="Type number... "
           />
