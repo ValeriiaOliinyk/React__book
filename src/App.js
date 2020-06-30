@@ -1,7 +1,6 @@
 // Base
 import React, { Component } from 'react';
 import shortId from 'shortid';
-import PropTypes from 'prop-types';
 import users from './users.json';
 
 // Components
@@ -12,16 +11,6 @@ import ContactForm from './components/ContactForm';
 import ContactList from './components/ContactList';
 
 class App extends Component {
-  static defaultProps = {
-    filter: '',
-    contacts: [],
-  };
-
-  static propTypes = {
-    contacts: PropTypes.node,
-    filter: PropTypes.string,
-  };
-
   state = {
     contacts: users,
     filter: '',
@@ -29,36 +18,35 @@ class App extends Component {
 
   addContact = (name, number) => {
     const { contacts } = this.state;
-    const phonebook = {
+    const currentContact = {
       id: shortId.generate(),
       name,
       number,
     };
 
-    const currentName = contacts.some(
-      contact => contact.name === phonebook.name,
+    const hasName = contacts.some(
+      contact => contact.name === currentContact.name,
     );
 
-    if (currentName) {
-      alert(`${phonebook.name} is already in contacts`);
+    if (hasName) {
+      alert(`${currentContact.name} is already in contacts`);
+      return;
     }
 
-    if (!currentName) {
-      this.setState(({ contacts }) => ({
-        contacts: [phonebook, ...contacts],
-      }));
-    }
+    this.setState(({ contacts }) => ({
+      contacts: [currentContact, ...contacts],
+    }));
   };
 
   changeFilter = e => {
     this.setState({ filter: e.currentTarget.value });
   };
 
-  getVissiableContacts = () => {
+  getVisibleContacts = () => {
     const { contacts, filter } = this.state;
-    const normalizzedFilter = filter.toLocaleLowerCase();
+    const normalizedFilter = filter.toLocaleLowerCase();
     return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizzedFilter),
+      contact.name.toLowerCase().includes(normalizedFilter),
     );
   };
 
@@ -72,7 +60,7 @@ class App extends Component {
 
   render() {
     const { contacts, filter } = this.state;
-    const visiableContacts = this.getVissiableContacts();
+    const visibleContacts = this.getVisibleContacts();
 
     return (
       <Container>
@@ -84,7 +72,7 @@ class App extends Component {
             <Filter value={filter} onChange={this.changeFilter} />
           )}
           <ContactList
-            contacts={visiableContacts}
+            contacts={visibleContacts}
             onDeleteContact={this.deleteContact}
           />
         </Section>
