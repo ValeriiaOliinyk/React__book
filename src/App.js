@@ -25,11 +25,11 @@ class App extends Component {
     };
 
     const hasName = contacts.some(
-      contact => contact.name === currentContact.name,
+      contact => contact.name === currentContact.name.trim(),
     );
 
     if (hasName) {
-      alert(`${currentContact.name} is already in contacts`);
+      alert(`${currentContact.name.trim()} is already in contacts`);
       return;
     }
 
